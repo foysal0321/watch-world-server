@@ -21,6 +21,7 @@ async function run(){
         const woodColletion = client.db('watch-world').collection('wood-watch')
         const buyerColletion = client.db('watch-world').collection('buyers')
         const sellerColletion = client.db('watch-world').collection('seller')
+        const bookingColletion = client.db('watch-world').collection('booking')
 
         //dress-watch
         app.get('/dress-watch', async (req,res)=>{
@@ -80,6 +81,19 @@ async function run(){
         app.get('/seller', async(req,res)=>{
             const query = req.body;
             const result = await sellerColletion.find(query).toArray()
+            res.send(result)
+        })
+
+        //booking
+        app.post('/booking',async(req,res)=>{
+            const query = req.body;
+            const result = await bookingColletion.insertOne(query)
+            res.send(result)
+        });
+
+        app.get('/booking',async(req,res)=>{
+            const query = {};
+            const result = await bookingColletion.find(query).toArray()
             res.send(result)
         })
 
