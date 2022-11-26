@@ -17,76 +17,26 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 
 async function run(){
     try{
-        const dressColletion = client.db('watch-world').collection('dress')
-        const sportColletion = client.db('watch-world').collection('sport-watch')
-        const woodColletion = client.db('watch-world').collection('wood-watch')
-
-        const buyerColletion = client.db('watch-world').collection('buyers')
-        const sellerColletion = client.db('watch-world').collection('seller')
+       
         const bookingColletion = client.db('watch-world').collection('booking')
         const paymentColletion = client.db('watch-world').collection('payment')
         const userColletion = client.db('watch-world').collection('user')
+        const addItemColletion = client.db('watch-world').collection('add-products');
 
-        //dress-watch
-        app.get('/dress-watch', async (req,res)=>{
-            const query = {}
-            const result = await dressColletion.find(query).limit(1).toArray()
-            res.send(result)
-        })
-        app.get('/dress-watchs', async (req,res)=>{
-            const query = {}
-            const result = await dressColletion.find(query).toArray()
-            res.send(result)
-        })
+        const cetagoryColletion = client.db('watch-world').collection('cetagorys')
+        const productsColletion = client.db('watch-world').collection('products')
 
-        //sport-watch
-        app.get('/sport-watch', async (req,res)=>{
+        app.get('/cetagory', async (req,res)=>{
             const query = {}
-            const result = await sportColletion.find(query).limit(1).toArray()
+            const result = await cetagoryColletion.find(query).toArray()
             res.send(result)
         })
-        app.get('/sport-watchs', async (req,res)=>{
-            const query = {}
-            const result = await sportColletion.find(query).toArray()
+        app.get('/cetagory/:id', async (req,res)=>{
+            const ids = req.params.id
+            const query = {ceta_id: ids}
+            const result = await productsColletion.find(query).toArray()
             res.send(result)
-        })
-
-        //wood-watch
-        app.get('/wood-watch', async (req,res)=>{
-            const query = {}
-            const result = await woodColletion.find(query).limit(1).toArray()
-            res.send(result)
-        })
-        app.get('/wood-watchs', async (req,res)=>{
-            const query = {}
-            const result = await woodColletion.find(query).toArray()
-            res.send(result)
-        })
-
-        //buyer
-        app.post('/buyers', async(req,res)=>{
-            const query = req.body;
-            const result = await buyerColletion.insertOne(query)
-            res.send(result)
-        })
-
-        app.get('/buyers', async(req,res)=>{
-            const query = {};
-            const result = await buyerColletion.find(query).toArray()
-            res.send(result)
-        })
-        //seller
-        app.post('/seller', async(req,res)=>{
-            const query = req.body;
-            const result = await sellerColletion.insertOne(query)
-            res.send(result)
-        })
-
-        app.get('/seller', async(req,res)=>{
-            const query = req.body;
-            const result = await sellerColletion.find(query).toArray()
-            res.send(result)
-        })
+        })    
 
         //booking
         app.post('/booking',async(req,res)=>{
@@ -95,8 +45,10 @@ async function run(){
             res.send(result)
         });
 
+        //get email booking
         app.get('/booking',async(req,res)=>{
-            const query = {};
+            let email = req.query.email;
+            const query = {email: email}
             const result = await bookingColletion.find(query).toArray()
             res.send(result)
         })
@@ -108,11 +60,26 @@ async function run(){
             res.send(result)
         })
 
+
+        
+
+        app.post('/add-products', async (req,res)=>{
+            const user = req.body;
+            const result = await addItemColletion.insertOne(user);
+            res.send(result)
+        });
+
+        app.get('/add-products', async (req,res)=>{
+            const query = {}
+            const users = await addItemColletion.find(query).toArray()
+            res.send(users)
+        })
+
+        //payment
         app.post('/create-payment-intent',async (req,res)=>{
             const booking = req.body;
             const price = booking.price;
             const amount = price * 100;
-
             const paymentInten = await stripe.paymentIntents.create({
                 currency: 'usd',
                 amount: amount,
@@ -124,7 +91,7 @@ async function run(){
                 clientSecret: paymentInten.client_secret,
               });
         })
-
+       
         app.post('/payments', async(req,res)=>{
             const payment = req.body;
             const result = await paymentColletion.insertOne(payment);
@@ -151,6 +118,18 @@ async function run(){
             const query = {}
             const users = await userColletion.find(query).toArray()
             res.send(users)
+        })
+
+        app.get('/users/buyers',async(req,res)=>{
+            const filter = {role: 'Buyer'}
+            const result = await userColletion.find(filter).toArray()
+            res.send(result)
+        })
+
+        app.get('/users/sellers',async(req,res)=>{
+            const filter = {role: 'Seller'}
+            const result = await userColletion.find(filter).toArray()
+            res.send(result)
         })
 
         app.delete('/users/:id', async (req,res)=>{
