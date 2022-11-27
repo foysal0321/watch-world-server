@@ -38,6 +38,9 @@ async function run(){
             res.send(result)
         })    
 
+        //add item store
+        // app.post('/')
+
         //booking
         app.post('/booking',async(req,res)=>{
             const query = req.body;
@@ -60,18 +63,36 @@ async function run(){
             res.send(result)
         })
 
-
-        
-
-        app.post('/add-products', async (req,res)=>{
+        //add product
+         app.post('/products', async (req,res)=>{
             const user = req.body;
             const result = await addItemColletion.insertOne(user);
             res.send(result)
         });
 
-        app.get('/add-products', async (req,res)=>{
-            const query = {}
-            const users = await addItemColletion.find(query).toArray()
+        app.get('/products',async(req,res)=>{
+           let useR = req.query.useR;
+            const query = {useR: useR}
+            console.log(query);
+           //const query ={}
+            const result = await addItemColletion.find(query).toArray()
+            res.send(result)
+        })
+       
+
+        app.get('/products/dress', async (req,res)=>{
+            const filter = {categori_name: 'Dress'}
+            const users = await addItemColletion.find(filter).toArray()
+            res.send(users)
+        })
+        app.get('/products/wood', async (req,res)=>{
+            const filter = {categori_name: 'Wood'}
+            const users = await addItemColletion.find(filter).toArray()
+            res.send(users)
+        })
+        app.get('/products/sport', async (req,res)=>{
+            const filter = {categori_name: 'Sport'}
+            const users = await addItemColletion.find(filter).toArray()
             res.send(users)
         })
 
@@ -157,6 +178,26 @@ async function run(){
             const query = {email}
             const user = await userColletion.findOne(query)
             res.send({isAdmin: user?.role === 'admin'})
+        });
+
+        // app.put('/users/seller/:id', async (req,res)=>{          
+        //     const ids = req.params.id;
+        //     const filter = {_id: ObjectId(ids)}
+        //     const option = {upsert: true}
+        //     const updateDoc= {
+        //         $set:{
+        //             role: 'seller'
+        //         }
+        //     }
+        //     const result =await userColletion.updateOne(filter, updateDoc, option)
+        //     res.send(result)
+        // })
+
+       app.get('/users/seller/:email', async (req,res)=>{
+            const email = req
+            const query = {email}
+            const user = await userColletion.findOne(query)
+            res.send({isSeller: user?.role === 'seller'})
         });
 
         
