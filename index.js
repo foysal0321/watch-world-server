@@ -38,8 +38,6 @@ async function run(){
             res.send(result)
         })    
 
-        //add item store
-        // app.post('/')
 
         //booking
         app.post('/booking',async(req,res)=>{
@@ -173,31 +171,20 @@ async function run(){
             res.send(result)
         })
 
-       app.get('/users/admin/:email', async (req,res)=>{
+        //isAdmin
+        app.get('/users/admin/:email', async (req,res)=>{
             const email = req.params.email;
             const query = {email}
             const user = await userColletion.findOne(query)
             res.send({isAdmin: user?.role === 'admin'})
         });
 
-        // app.put('/users/seller/:id', async (req,res)=>{          
-        //     const ids = req.params.id;
-        //     const filter = {_id: ObjectId(ids)}
-        //     const option = {upsert: true}
-        //     const updateDoc= {
-        //         $set:{
-        //             role: 'seller'
-        //         }
-        //     }
-        //     const result =await userColletion.updateOne(filter, updateDoc, option)
-        //     res.send(result)
-        // })
-
-       app.get('/users/seller/:email', async (req,res)=>{
-            const email = req
+        //isSeller
+        app.get('/users/seller/:email', async (req,res)=>{
+            const email = req.params.email
             const query = {email}
             const user = await userColletion.findOne(query)
-            res.send({isSeller: user?.role === 'seller'})
+            res.send({isSeller: user?.role === 'Seller'})
         });
 
         
