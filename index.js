@@ -70,7 +70,7 @@ async function run(){
             const result = await productsColletion.find(query).toArray()
             res.send(result)
         })    
-//
+
 
             app.post('/booking', async (req,res)=>{           
                 const booking = req.body;
@@ -87,13 +87,6 @@ async function run(){
                 const result = await bookingColletion.insertOne(booking);                 
             res.send(result)
             })
-
-        //booking
-        // app.post('/booking',async(req,res)=>{
-        //     const query = req.body;
-        //     const result = await bookingColletion.insertOne(query)
-        //     res.send(result)
-        // });
 
         //get email booking
         app.get('/booking', async (req,res)=>{
@@ -165,9 +158,7 @@ async function run(){
             const result = await productsColletion.find(query).toArray()
             res.send(result)
         })
-      
-       
-       
+    
 
         app.get('/products/dress', async (req,res)=>{
 
@@ -175,7 +166,6 @@ async function run(){
             const users = await productsColletion.find(filter).toArray()
             res.send(users)
         })
-
 
         app.get('/products/wood',  async (req,res)=>{
             const filter = {categori_name: 'Wood'}
